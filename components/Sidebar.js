@@ -37,7 +37,9 @@ function Sidebar() {
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src={'https://rb.gy/ogau5a'}
+          src={
+            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRSsG74yByEAilFnLJRU4pWgydia9qC0fA3OLzsM7h0j7mDbaWQ&s'
+          }
           alt=''
           className='h-10 w-10 rounded-full xl:mr-2.5'
         />
