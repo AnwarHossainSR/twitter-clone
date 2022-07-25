@@ -5,9 +5,21 @@ import {
   PhotographIcon,
   XIcon,
 } from '@heroicons/react/outline';
+import { useRef, useState } from 'react';
+import { db, storage } from '../firebase';
+import {
+  addDoc,
+  collection,
+  doc,
+  serverTimestamp,
+  updateDoc,
+} from '@firebase/firestore';
+import { getDownloadURL, ref, uploadString } from '@firebase/storage';
+import { signOut, useSession } from 'next-auth/react';
+import dynamic from 'next/dynamic';
+// const Picker = dynamic(() => import("emoji-picker-react"), { ssr: false });
 import { Picker } from 'emoji-mart';
 import 'emoji-mart/css/emoji-mart.css';
-import { useRef, useState } from 'react';
 
 function Input() {
   const [input, setInput] = useState('');
@@ -35,7 +47,36 @@ function Input() {
     setInput(input + emoji);
   };
 
-  const sendPost = () => {};
+  const sendPost = async () => {
+    if (loading) return;
+    setLoading(true);
+
+    const docRef = await addDoc(collection(db, 'posts'), {
+      // id: session.user.uid,
+      // username: session.user.name,
+      // userImg: session.user.image,
+      // tag: session.user.tag,
+      text: input,
+      timestamp: serverTimestamp(),
+    });
+
+    const imageRef = ref(storage, `posts/${docRef.id}/image`);
+
+    if (selectedFile) {
+      await uploadString(imageRef, selectedFile, 'data_url').then(async () => {
+        const downloadURL = await getDownloadURL(imageRef);
+        await updateDoc(doc(db, 'posts', docRef.id), {
+          image: downloadURL,
+        });
+      });
+    }
+
+    setLoading(false);
+    setInput('');
+    setSelectedFile(null);
+    setShowEmojis(false);
+  };
+
 
   return (
     <div
