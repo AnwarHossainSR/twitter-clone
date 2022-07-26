@@ -1,13 +1,4 @@
 import {
-  CalendarIcon,
-  ChartBarIcon,
-  EmojiHappyIcon,
-  PhotographIcon,
-  XIcon,
-} from '@heroicons/react/outline';
-import { useRef, useState } from 'react';
-import { db, storage } from '../firebase';
-import {
   addDoc,
   collection,
   doc,
@@ -15,13 +6,21 @@ import {
   updateDoc,
 } from '@firebase/firestore';
 import { getDownloadURL, ref, uploadString } from '@firebase/storage';
-import { signOut, useSession } from 'next-auth/react';
-import dynamic from 'next/dynamic';
-// const Picker = dynamic(() => import("emoji-picker-react"), { ssr: false });
+import {
+  CalendarIcon,
+  ChartBarIcon,
+  EmojiHappyIcon,
+  PhotographIcon,
+  XIcon,
+} from '@heroicons/react/outline';
 import { Picker } from 'emoji-mart';
 import 'emoji-mart/css/emoji-mart.css';
+import { signOut, useSession } from 'next-auth/react';
+import { useRef, useState } from 'react';
+import { db, storage } from '../firebase';
 
 function Input() {
+  const { data: session } = useSession();
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
@@ -52,10 +51,10 @@ function Input() {
     setLoading(true);
 
     const docRef = await addDoc(collection(db, 'posts'), {
-      // id: session.user.uid,
-      // username: session.user.name,
-      // userImg: session.user.image,
-      // tag: session.user.tag,
+      id: session.user.uid,
+      username: session.user.name,
+      userImg: session.user.image,
+      tag: session.user.tag,
       text: input,
       timestamp: serverTimestamp(),
     });
@@ -77,18 +76,16 @@ function Input() {
     setShowEmojis(false);
   };
 
-
   return (
     <div
       className={`border-b border-gray-700 p-3 flex space-x-3 overflow-y-scroll scrollbar-hide`}
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src={
-          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRSsG74yByEAilFnLJRU4pWgydia9qC0fA3OLzsM7h0j7mDbaWQ&s'
-        }
+        src={session.user.image}
         alt=''
         className='h-11 w-11 rounded-full cursor-pointer'
+        onClick={signOut}
       />
       <div className='divide-y divide-gray-700 w-full'>
         <div>

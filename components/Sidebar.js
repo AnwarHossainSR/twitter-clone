@@ -9,10 +9,12 @@ import {
   UserIcon,
 } from '@heroicons/react/outline';
 import { HomeIcon } from '@heroicons/react/solid';
+import { signOut, useSession } from 'next-auth/react';
 import Image from 'next/image';
 import SidebarLink from './SidebarLink';
 
 function Sidebar() {
+  const { data: session } = useSession();
   return (
     <div className='hidden sm:flex flex-col items-center xl:items-start xl:w-[340px] p-2 fixed h-full'>
       <div className='flex items-center justify-center w-14 h-14 hoverAnimation p-0 xl:ml-24'>
@@ -33,19 +35,17 @@ function Sidebar() {
       </button>
       <div
         className='text-[#d9d9d9] flex items-center justify-center mt-auto hoverAnimation xl:ml-auto xl:-mr-5'
-        //onClick={signOut}
+        onClick={signOut}
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src={
-            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRSsG74yByEAilFnLJRU4pWgydia9qC0fA3OLzsM7h0j7mDbaWQ&s'
-          }
+          src={session.user.image}
           alt=''
           className='h-10 w-10 rounded-full xl:mr-2.5'
         />
         <div className='hidden xl:inline leading-5'>
-          <h4 className='font-bold'>Anwar</h4>
-          <p className='text-[#6e767d]'>@Tag</p>
+          <h4 className='font-bold'>{session.user.name}</h4>
+          <p className='text-[#6e767d]'>@{session.user.tag}</p>
         </div>
         <DotsHorizontalIcon className='h-5 hidden xl:inline ml-10' />
       </div>
