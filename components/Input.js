@@ -1,4 +1,12 @@
 import {
+  addDoc,
+  collection,
+  doc,
+  serverTimestamp,
+  updateDoc,
+} from '@firebase/firestore';
+import { getDownloadURL, ref, uploadString } from '@firebase/storage';
+import {
   CalendarIcon,
   ChartBarIcon,
   EmojiHappyIcon,
@@ -7,9 +15,12 @@ import {
 } from '@heroicons/react/outline';
 import { Picker } from 'emoji-mart';
 import 'emoji-mart/css/emoji-mart.css';
+import { signOut, useSession } from 'next-auth/react';
 import { useRef, useState } from 'react';
+import { db, storage } from '../firebase';
 
 function Input() {
+  const { data: session } = useSession();
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
@@ -35,7 +46,35 @@ function Input() {
     setInput(input + emoji);
   };
 
-  const sendPost = () => {};
+  const sendPost = async () => {
+    if (loading) return;
+    setLoading(true);
+
+    const docRef = await addDoc(collection(db, 'posts'), {
+      id: session.user.uid,
+      username: session.user.name,
+      userImg: session.user.image,
+      tag: session.user.tag,
+      text: input,
+      timestamp: serverTimestamp(),
+    });
+
+    const imageRef = ref(storage, `posts/${docRef.id}/image`);
+
+    if (selectedFile) {
+      await uploadString(imageRef, selectedFile, 'data_url').then(async () => {
+        const downloadURL = await getDownloadURL(imageRef);
+        await updateDoc(doc(db, 'posts', docRef.id), {
+          image: downloadURL,
+        });
+      });
+    }
+
+    setLoading(false);
+    setInput('');
+    setSelectedFile(null);
+    setShowEmojis(false);
+  };
 
   return (
     <div
@@ -43,11 +82,10 @@ function Input() {
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src={
-          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRSsG74yByEAilFnLJRU4pWgydia9qC0fA3OLzsM7h0j7mDbaWQ&s'
-        }
+        src={session.user.image}
         alt=''
         className='h-11 w-11 rounded-full cursor-pointer'
+        onClick={signOut}
       />
       <div className='divide-y divide-gray-700 w-full'>
         <div>
