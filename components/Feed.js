@@ -1,10 +1,12 @@
+import { collection, onSnapshot, orderBy, query } from "@firebase/firestore";
 import { SparklesIcon } from "@heroicons/react/outline";
-import { useEffect, useState } from "react";
-import Input from "./Input";
-import { onSnapshot, collection, query, orderBy } from "@firebase/firestore";
-import { db } from "../firebase";
-import Post from "./Post";
 import { useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
+
+import { db } from "../firebase";
+
+import Input from "./Input";
+import Post from "./Post";
 
 function Feed() {
   const { data: session } = useSession();
@@ -25,7 +27,7 @@ function Feed() {
   // }, [db]);
 
   // CLEAN
- 
+
   useEffect(
     () =>
       onSnapshot(
