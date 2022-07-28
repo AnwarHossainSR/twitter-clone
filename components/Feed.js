@@ -1,15 +1,15 @@
-import {collection, onSnapshot, orderBy, query} from "@firebase/firestore";
-import {SparklesIcon} from "@heroicons/react/outline";
-import {useSession} from "next-auth/react";
-import {useEffect, useState} from "react";
+import { collection, onSnapshot, orderBy, query } from "@firebase/firestore";
+import { SparklesIcon } from "@heroicons/react/outline";
+import { useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
 
-import {db} from "../firebase";
+import { db } from "../firebase";
 
 import Input from "./Input";
 import Post from "./Post";
 
 function Feed() {
-  const {data : session} = useSession();
+  const { data: session } = useSession();
   const [posts, setPosts] = useState([]);
 
   // MESSY
@@ -28,10 +28,16 @@ function Feed() {
 
   // CLEAN
 
-  useEffect(() => onSnapshot(
-                query(collection(db, "posts"), orderBy("timestamp", "desc")),
-                (snapshot) => { setPosts(snapshot.docs); }),
-            []);
+  useEffect(
+    () =>
+      onSnapshot(
+        query(collection(db, "posts"), orderBy("timestamp", "desc")),
+        (snapshot) => {
+          setPosts(snapshot.docs);
+        }
+      ),
+    []
+  );
 
   return (
     <div className="flex-grow border-l border-r border-gray-700 max-w-2xl sm:ml-[73px] xl:ml-[370px]">
@@ -45,8 +51,7 @@ function Feed() {
       <Input />
       <div className="pb-72">
         {posts.map((post) => (
-          <Post key={post.id} id={post.id} post={
-      post.data()} />
+          <Post key={post.id} id={post.id} post={post.data()} />
         ))}
       </div>
     </div>
