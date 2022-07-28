@@ -8,24 +8,23 @@ import {
   SwitchHorizontalIcon,
   TrashIcon,
 } from '@heroicons/react/outline';
-import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/router';
+import {useSession} from 'next-auth/react';
+import {useRouter} from 'next/router';
 import Moment from 'react-moment';
-//import { useRecoilState } from 'recoil';
+// import { useRecoilState } from 'recoil';
 
-function Post({ id, post, postPage }) {
-  const { data: session } = useSession();
+function Post({id, post, postPage}) {
+  const {data : session} = useSession();
   const router = useRouter();
 
   return (
     <div
-      className='p-3 flex cursor-pointer border-b border-gray-700'
+  className = 'p-3 flex cursor-pointer border-b border-gray-700'
       onClick={() => router.push(`/${id}`)}
     >
       {!postPage && (
         <img
-          src={post?.userImg}
-          alt=''
+      src = {post?.userImg} alt = ''
           className='h-11 w-11 rounded-full mr-4'
         />
       )}
@@ -33,15 +32,15 @@ function Post({ id, post, postPage }) {
         <div className={`flex ${!postPage && 'justify-between'}`}>
           {postPage && (
             <img
-              src={post?.userImg}
-              alt='Profile Pic'
+          src = {post?.userImg} alt = 'Profile Pic'
               className='h-11 w-11 rounded-full mr-4'
             />
           )}
           <div className='text-[#6e767d]'>
             <div className='inline-block group'>
               <h4
-                className={`font-bold text-[15px] sm:text-base text-[#d9d9d9] group-hover:underline ${
+              className = {
+                  `font-bold text-[15px] sm:text-base text-[#d9d9d9] group-hover:underline ${
                   !postPage && 'inline-block'
                 }`}
               >
@@ -61,7 +60,8 @@ function Post({ id, post, postPage }) {
               <p className='text-[#d9d9d9] text-[15px] sm:text-base mt-0.5'>
                 {post?.text}
               </p>
-            )}
+            )
+}
           </div>
           <div className='icon group flex-shrink-0 ml-auto'>
             <DotsHorizontalIcon className='h-5 text-[#6e767d] group-hover:text-[#1d9bf0]' />
@@ -118,6 +118,6 @@ function Post({ id, post, postPage }) {
       </div>
     </div>
   );
-}
+          }
 
-export default Post;
+          export default Post;
